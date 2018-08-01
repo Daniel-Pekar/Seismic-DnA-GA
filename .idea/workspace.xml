@@ -11,23 +11,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Fixed width.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Fixed width.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="562">
-              <caret line="36" column="25" lean-forward="true" selection-start-line="36" selection-start-column="25" selection-end-line="36" selection-end-column="25" />
-              <folding>
-                <element signature="e#0#9#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="GeneticAlgorithm.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GeneticAlgorithm.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="64">
-              <caret line="4" column="22" lean-forward="true" selection-start-column="1" selection-end-line="4" selection-end-column="22" />
+              <caret line="19" column="22" lean-forward="true" selection-start-line="19" selection-start-column="22" selection-end-line="19" selection-end-column="22" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -38,8 +26,8 @@
       <file leaf-file-name="Generate Tower.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Generate Tower.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="259">
-              <caret line="45" column="8" selection-start-line="45" selection-start-column="8" selection-end-line="45" selection-end-column="8" />
+            <state relative-caret-position="196">
+              <caret line="106" column="32" lean-forward="true" selection-start-line="106" selection-start-column="32" selection-end-line="106" selection-end-column="32" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -59,6 +47,7 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>CurrentRow</find>
+      <find>chromosome</find>
     </findStrings>
     <replaceStrings>
       <replace>all_nodes</replace>
@@ -70,6 +59,7 @@
       <replace>nodes_start_row</replace>
       <replace>chromosome</replace>
       <replace>current_row</replace>
+      <replace>self.genes</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -168,7 +158,7 @@
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.15709262" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" side_tool="true" weight="0.32919255" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.33249685" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.2685069" />
       <window_info anchor="bottom" id="Version Control" />
       <window_info anchor="bottom" id="Python Console" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -206,7 +196,7 @@
     <entry file="file://$PROJECT_DIR$/GeneticAlgorithm.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="64">
-          <caret line="4" column="22" lean-forward="true" selection-start-column="1" selection-end-line="4" selection-end-column="22" />
+          <caret line="19" column="22" lean-forward="true" selection-start-line="19" selection-start-column="22" selection-end-line="19" selection-end-column="22" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
@@ -215,8 +205,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Generate Tower.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="259">
-          <caret line="45" column="8" selection-start-line="45" selection-start-column="8" selection-end-line="45" selection-end-column="8" />
+        <state relative-caret-position="196">
+          <caret line="106" column="32" lean-forward="true" selection-start-line="106" selection-start-column="32" selection-end-line="106" selection-end-column="32" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>

@@ -41,32 +41,42 @@ class Node:
         self.z_gene_name = z_gene_name
 
 
-def multiply_by_gene(var_to_check, gene_to_mult_by, range_to_mult_low, range_to_mult_high):
-    for current_gene_num in range(range_to_mult_low, range_to_mult_high):
+
         
 
 
-def find_value_dep_on_gene(gene_name, chromosome):
-    print(gene_name)
-    if '-' in gene_name:
-        gene_name_pos = gene_name.replace('-', '')
-        for i in range(len(chromosome)):
-            if chromosome[i].name == gene_name_pos:
-                value = chromosome[i].value * -1
-                break
-    else:
-        for i in range(len(chromosome)):
-            if chromosome[i].name == gene_name:
-                value = chromosome[i].value
-                break
-    return value
+
 
 #note: put in the row/column indices as strings
 
 
-def get_nodes(nodes_name_col, nodes_x_col, nodes_y_col, nodes_z_col, nodes_start_row, chromosome):
-    wb = load_workbook('Setup.xlsx')
-    ws = wb.active
+def get_nodes(nodes_name_col, nodes_x_col, nodes_y_col, nodes_z_col, nodes_start_row, range_to_mult_by_gene, gene_to_mult_by, chromosome, ws):
+
+    def find_value_dep_on_gene(gene_name, range_to_mult_by_gene, gene_to_mult_by, chromosome):
+        print(gene_name)
+        if '-' in gene_name:
+            gene_name_pos = gene_name.replace('-', '')
+            for i in range(len(chromosome)):
+                if chromosome[i].name == gene_name_pos:
+                    value = chromosome[i].value * -1
+                    if multiply_by_gene(gene_name, range_to_mult_by_gene):
+                        value = value * chromosome[gene_to_mult_by - 1].value
+                    break
+        else:
+            for i in range(len(chromosome)):
+                if chromosome[i].name == gene_name:
+                    value = chromosome[i].value
+                    if multiply_by_gene(gene_name, range_to_mult_by_gene):
+                        value = value * chromosome[gene_to_mult_by - 1].value
+                    break
+        return value
+
+    def multiply_by_gene(var_to_check, range_to_mult):
+        for current_gene_num in range_to_mult:
+            if str(current_gene_num) in var_to_check:
+                return True
+        return False
+
     all_nodes = []
     #assign values to nodes
     current_row = nodes_start_row
@@ -81,25 +91,43 @@ def get_nodes(nodes_name_col, nodes_x_col, nodes_y_col, nodes_z_col, nodes_start
         node_z_loc = 'na'
         if type(node_x) != int:
             node_x_loc = node_x
-            node_x = find_value_dep_on_gene(node_x, chromosome)
+            node_x = find_value_dep_on_gene(node_x, range_to_mult_by_gene, gene_to_mult_by, chromosome)
         if type(node_y) != int:
             node_y_loc = node_y
-            node_y = find_value_dep_on_gene(node_y, chromosome)
+            node_y = find_value_dep_on_gene(node_y, range_to_mult_by_gene, gene_to_mult_by, chromosome)
         if type(node_z) != int:
             node_z_loc = node_z
-            node_z = find_value_dep_on_gene(node_z, chromosome)
+            node_z = find_value_dep_on_gene(node_z, range_to_mult_by_gene, gene_to_mult_by, chromosome)
         all_nodes.append(Node(node_name, node_x, node_y, node_z, node_x_loc, node_y_loc, node_z_loc))
         current_row = current_row + 1
     return all_nodes
 
+def build_tower(nodes, start_node_col, end_node_col, ws):
+    #start SAP2000
+    SapObject.ApplicationStart()
+    #create SapModel Object
+    SapModel = SapObject.SapModel
+    #initiaize model
+    SapModel.InitializeNewModel()
+    #create new blank model
+    ret = SapModel.File.NewBlank()
+
+    #set units
+    #define material property
+    #define section properties
+    #create nodes
+    #create members
+    #return the SapModel object
+
+
 wb = load_workbook('Setup.xlsx')
 ws = wb.active
 
-TestChromosome = Chromosome(len = 23)
+TestChromosome = Chromosome(len=23)
 TestChromosome.create_Chromosome(ws)
 
-AllNodes = get_nodes('B', 'F', 'G', 'H', 4, TestChromosome.genes)
-
+AllNodes = get_nodes('B', 'F', 'G', 'H', 4, range(2,12), 1, TestChromosome.genes, ws)
+Tower = build_tower(AllNodes, ws)
 
 for i in range(len(AllNodes)):
     print(AllNodes[i].name)
