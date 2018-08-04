@@ -102,7 +102,7 @@ def get_nodes(nodes_name_col, nodes_x_col, nodes_y_col, nodes_z_col, nodes_start
         current_row = current_row + 1
     return all_nodes
 
-def build_tower(nodes, start_node_col, end_node_col, ws):
+def build_tower(nodes, start_node_col, end_node_col, mat_props, member_prop_col = 'na', rod_prop_col, prop_start_row, ws):
     #start SAP2000
     SapObject.ApplicationStart()
     #create SapModel Object
@@ -111,9 +111,13 @@ def build_tower(nodes, start_node_col, end_node_col, ws):
     SapModel.InitializeNewModel()
     #create new blank model
     ret = SapModel.File.NewBlank()
-
     #set units
-    #define material property
+    kN_m_C = 6
+    SapModel.SetPresentUnits(kN_m_C)
+
+    #define material properties
+    #define balsa properties
+
     #define section properties
     #create nodes
     #create members
