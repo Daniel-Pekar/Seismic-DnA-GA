@@ -102,7 +102,9 @@ def get_nodes(nodes_name_col, nodes_x_col, nodes_y_col, nodes_z_col, nodes_start
         current_row = current_row + 1
     return all_nodes
 
-def build_tower(nodes, start_node_col, end_node_col, mat_props, member_prop_col = 'na', rod_prop_col, prop_start_row, ws):
+def build_tower(nodes, start_node_col, end_node_col, member_prop_col, mat_props_cols, section_props_cols, start_row, ws):
+    #create SAP2000 object
+    SapObject = win32com.client.Dispatch('SAP2000v15.SapObject')
     #start SAP2000
     SapObject.ApplicationStart()
     #create SapModel Object
@@ -116,11 +118,67 @@ def build_tower(nodes, start_node_col, end_node_col, mat_props, member_prop_col 
     SapModel.SetPresentUnits(kN_m_C)
 
     #define material properties
-    #define balsa properties
+    for mat_prop_counter in range(len(mat_props_cols)):
+        current_col = mat_props_cols[mat_prop_counter]
+        mat_type = ws[current_col + str(start_row)].value
+        mat_name = ws[current_col + str(start_row + 1)].value
+        mat_E = ws[current_col + str(start_row + 2)].value
+        mat_poisson = ws[current_col + str(start_row + 3)].value
+        mat_thermal = ws[current_col + str(start_row + 4)].value
+        mat_unit_wt = ws[current_col + str(start_row + 5)].value
+        #create material type
+        SapModel.PropMaterial.SetMaterial(mat_name, mat_type)
+        #set isotropic material properties
+        SapModel.PropMaterial.SetMPIsotropic(mat_name, mat_E, mat_poisson, mat_thermal)
+        #set unit weight
+        SapModel.PropMaterial.SetWeightAndMass(mat_name, 1, mat_unit_wt)
 
     #define section properties
+    for sec_prop_counter in range(len(section_props_cols)):
+        current_col = section_props_cols[sec_prop_counter]
+        sec_name = ws[current_col + str(start_row)].value
+        sec_mat = ws[current_col + str(start_row + 1)].value
+        sec_shape = ws[current_col + str(start_row + 2)].value
+        if 'SQUARE' == sec_shape:
+            sec_width = ws[current_col + str(start_row + 3)].value
+            sec_height = ws[current_col + str(start_row + 4)].value
+            SapModel.PropFrame.SetRectangle(sec_name, sec_mat, sec_height, sec_width)
+        elif 'CIRCULAR' == sec_shape:
+            sec_dia = ws[current_col +str(start_row + 3)].value
+            SapModel.PropFrame.SetCircle(sec_name, sec_mat, sec_dia)
+        else:
+            print('ERROR: Define a section shape in the setup workbook!')
     #create nodes
+    for current_node_counter in range(len(nodes)):
+        current_node_name = nodes[current_node_counter].name
+        current_node_x = nodes[current_node_counter].x
+        current_node_y = nodes[current_node_counter].y
+        current_node_z = nodes[current_node_counter].z
+        print('Creating node at ' + str(current_node_x) + ', ' + str(current_node_y) + ', ' + str(current_node_z))
+        assigned_node_name = ' '
+        [ret, assigned_node_name] = SapModel.PointObj.AddCartesian(current_node_x, current_node_y, current_node_z, assigned_node_name, current_node_name)
+        print(assigned_node_name)
+        print(type(assigned_node_name))
+        if ret != 0:
+            print('Error creating node')
+    print('Done creating nodes')
     #create members
+    current_row = start_row
+    while ws[start_node_col + str(current_row)].value is not None:
+        print(current_row)
+        start_node_name = ws[start_node_col + str(current_row)].value
+        end_node_name = ws[end_node_col + str(current_row)].value
+        member_prop = ws[member_prop_col + str(current_row)].value
+        member_name = start_node_name + ' to ' + end_node_name
+        print('Creating member ' + member_name)
+        assigned_member_name = ' '
+        ret = SapModel.FrameObj.AddByPoint(start_node_name, end_node_name, assigned_member_name, member_prop, member_name)
+        print(ret)
+        print(assigned_member_name)
+        if ret != 0:
+            print('Error creating member ' + member_name)
+        current_row = current_row + 1
+    print('Done creating members')
     #return the SapModel object
 
 
@@ -131,8 +189,7 @@ TestChromosome = Chromosome(len=23)
 TestChromosome.create_Chromosome(ws)
 
 AllNodes = get_nodes('B', 'F', 'G', 'H', 4, range(2,12), 1, TestChromosome.genes, ws)
-Tower = build_tower(AllNodes, ws)
-
+build_tower(AllNodes, 'Q', 'R', 'T', ['X', 'AA'], ['AD', 'AG'], 4, ws)
 for i in range(len(AllNodes)):
     print(AllNodes[i].name)
     print(AllNodes[i].x)
