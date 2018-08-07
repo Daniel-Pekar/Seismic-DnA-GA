@@ -355,3 +355,4 @@ SapModel = ga_CONSTRUCT(TestChromosome.genes, ws, ExcelIndex, TimeHistory, SaveL
 ga_ANALYZE(SaveLocation)
 TotalTime = time.time() - StartTime
 print('\n\n\n\n\nDONE. Total time taken for 100 models: ' + str(TotalTime))
+

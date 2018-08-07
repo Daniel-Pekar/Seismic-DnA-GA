@@ -12,10 +12,26 @@
     <session id="1534729159">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
+<<<<<<< HEAD
           <entry key="project.closed" value="6" />
           <entry key="project.open.time.7" value="3" />
           <entry key="project.open.time.8" value="4" />
           <entry key="project.opened" value="7" />
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+          <entry key="project.closed" value="1" />
+          <entry key="project.open.time.5" value="1" />
+          <entry key="project.opened" value="1" />
+=======
+          <entry key="project.closed" value="2" />
+=======
+          <entry key="project.closed" value="3" />
+>>>>>>> Kota
+          <entry key="project.open.time.7" value="1" />
+          <entry key="project.open.time.8" value="3" />
+          <entry key="project.opened" value="4" />
+>>>>>>> master
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
@@ -26,17 +42,42 @@
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
+<<<<<<< HEAD
           <entry key="Python" value="15112" />
+=======
+<<<<<<< HEAD
+          <entry key="Python" value="14725" />
+>>>>>>> Kota
+=======
+          <entry key="Python" value="15040" />
+>>>>>>> Kota
+>>>>>>> master
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
+<<<<<<< HEAD
           <entry key="py" value="7" />
+=======
+<<<<<<< HEAD
+          <entry key="py" value="1" />
+=======
+          <entry key="py" value="6" />
+>>>>>>> Kota
+>>>>>>> master
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
+<<<<<<< HEAD
           <entry key="Python" value="7" />
+=======
+<<<<<<< HEAD
+          <entry key="Python" value="1" />
+=======
+          <entry key="Python" value="6" />
+>>>>>>> Kota
+>>>>>>> master
         </counts>
       </usages-collector>
     </session>
@@ -44,19 +85,52 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
+<<<<<<< HEAD
+        <entry file="file://$PROJECT_DIR$/Fixed width.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="516">
+              <caret line="36" column="25" selection-start-line="36" selection-start-column="25" selection-end-line="36" selection-end-column="25" />
+=======
         <entry file="file://$PROJECT_DIR$/GeneticAlgorithm.py">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="576">
               <caret line="55" selection-start-line="55" selection-end-line="55" />
+=======
+            <state relative-caret-position="240">
+              <caret line="19" column="22" selection-start-line="19" selection-start-column="22" selection-end-line="19" selection-end-column="22" />
+>>>>>>> Kota
+              <folding>
+                <element signature="e#0#9#0" expanded="true" />
+              </folding>
+>>>>>>> master
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< HEAD
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/GeneticAlgorithm.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="112">
+              <caret line="7" column="47" lean-forward="true" selection-start-line="7" selection-start-column="47" selection-end-line="7" selection-end-column="47" />
+=======
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Generate_Tower.py">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="128">
               <caret line="8" column="29" selection-start-line="8" selection-start-column="29" selection-end-line="8" selection-end-column="29" />
+=======
+<<<<<<< HEAD
+            <state relative-caret-position="585">
+              <caret line="354" column="35" lean-forward="true" selection-start-line="354" selection-start-column="35" selection-end-line="354" selection-end-column="35" />
+>>>>>>> Kota
+=======
+            <state relative-caret-position="-679">
+              <caret line="271" column="18" selection-start-line="271" selection-start-column="18" selection-end-line="271" selection-end-column="18" />
+>>>>>>> Kota
+>>>>>>> master
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -64,11 +138,19 @@
           </provider>
         </entry>
       </file>
+<<<<<<< HEAD
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Generate Tower.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-236">
+              <caret line="54" column="23" lean-forward="true" selection-start-line="54" selection-start-column="23" selection-end-line="54" selection-end-column="23" />
+=======
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Fixed width.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="528">
               <caret line="36" column="25" selection-start-line="36" selection-start-column="25" selection-end-line="36" selection-end-column="25" />
+>>>>>>> Kota
             </state>
           </provider>
         </entry>
@@ -123,9 +205,24 @@
       </list>
     </option>
   </component>
+<<<<<<< HEAD
+  <component name="ProjectFrameBounds">
+    <option name="x" value="1269" />
+=======
   <component name="ProjectFrameBounds" extendedState="6">
+<<<<<<< HEAD
     <option name="x" value="873" />
     <option name="y" value="-27" />
+=======
+<<<<<<< HEAD
+    <option name="x" value="1114" />
+    <option name="y" value="-17" />
+>>>>>>> Kota
+=======
+    <option name="x" value="874" />
+    <option name="y" value="-26" />
+>>>>>>> Kota
+>>>>>>> master
     <option name="width" value="1302" />
     <option name="height" value="1392" />
   </component>
@@ -241,13 +338,34 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
+<<<<<<< HEAD
+    <frame x="846" y="0" width="868" height="928" extended-state="0" />
+    <layout>
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.15643802" />
+=======
     <frame x="-7" y="-7" width="1721" height="935" extended-state="6" />
     <layout>
+<<<<<<< HEAD
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2719715" />
+=======
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.0783848" />
+>>>>>>> Kota
+>>>>>>> master
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
+<<<<<<< HEAD
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.33249685" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.39503106" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Terminal" order="7" />
+      <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" weight="0.32919255" />
+      <window_info anchor="bottom" id="Version Control" order="9" />
+      <window_info anchor="bottom" id="Python Console" order="10" />
+=======
       <window_info anchor="bottom" id="Run" order="2" weight="0.31794873" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3948718" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
@@ -257,6 +375,7 @@
       <window_info anchor="bottom" id="Python Console" order="8" weight="0.32901555" />
       <window_info anchor="bottom" id="Version Control" order="9" weight="0.32948717" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" weight="0.32919255" />
+>>>>>>> Kota
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -266,6 +385,15 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
+<<<<<<< HEAD
+    <entry file="file://$PROJECT_DIR$/GeneticAlgorithm.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="112">
+          <caret line="7" column="47" lean-forward="true" selection-start-line="7" selection-start-column="47" selection-end-line="7" selection-end-column="47" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+=======
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36/Lib/site-packages/win32com/client/build.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="156">
@@ -298,14 +426,30 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="148">
           <caret line="337" selection-start-line="337" selection-end-line="337" />
+>>>>>>> Kota
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/Generate Tower.py" />
     <entry file="file://$PROJECT_DIR$/Fixed width.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="528">
           <caret line="36" column="25" selection-start-line="36" selection-start-column="25" selection-end-line="36" selection-end-column="25" />
+=======
+    <entry file="file://$PROJECT_DIR$/Fixed width.py">
+      <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+        <state relative-caret-position="516">
+          <caret line="36" column="25" selection-start-line="36" selection-start-column="25" selection-end-line="36" selection-end-column="25" />
+=======
+        <state relative-caret-position="240">
+          <caret line="19" column="22" selection-start-line="19" selection-start-column="22" selection-end-line="19" selection-end-column="22" />
+>>>>>>> Kota
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+>>>>>>> master
         </state>
       </provider>
     </entry>
@@ -318,11 +462,26 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Generate_Tower.py">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="128">
           <caret line="8" column="29" selection-start-line="8" selection-start-column="29" selection-end-line="8" selection-end-column="29" />
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+        <state relative-caret-position="-236">
+          <caret line="54" column="23" lean-forward="true" selection-start-line="54" selection-start-column="23" selection-end-line="54" selection-end-column="23" />
+=======
+        <state relative-caret-position="585">
+          <caret line="354" column="35" lean-forward="true" selection-start-line="354" selection-start-column="35" selection-end-line="354" selection-end-column="35" />
+=======
+        <state relative-caret-position="-679">
+          <caret line="271" column="18" selection-start-line="271" selection-start-column="18" selection-end-line="271" selection-end-column="18" />
+>>>>>>> Kota
+>>>>>>> master
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
+>>>>>>> Kota
         </state>
       </provider>
     </entry>
