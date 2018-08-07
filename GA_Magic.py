@@ -3,8 +3,6 @@ import Generate_Tower
 from GeneticAlgorithm import *
 from Generate_Tower import *
 
-
-
 wb = load_workbook('Setup.xlsx')
 ws = wb.active
 glen = (ws['J2']).value

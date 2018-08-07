@@ -5,32 +5,8 @@ import random
 from openpyxl import *
 import re
 import time
-
-#from geneticalgorithm.py###############################
-class Gene:
-    def __init__(self,ws,name="",lower=0,upper=0,value=0,cell_col = 0):
-        self.cell_col = cell_col
-        self.name = ws['N' + str(self.cell_col)].value
-        self.lower = ws['O' + str(self.cell_col)].value
-        self.upper = ws['P' + str(self.cell_col)].value
-        self.value = value
-
-    def generate_initial_values(self, ws):
-        self.value = round(random.uniform(self.lower, self.upper), 2)
-
-class Chromosome:
-    def __init__(self,len,genes = [],fitness = 0, chance = 0):
-        self.len = len
-        self.genes = genes
-        self.fitness = fitness
-        self.selectionchance = chance
-
-    def create_Chromosome(self,worksheet):
-        self.genes = [Gene(ws = worksheet, cell_col = i + 4) for i in range(self.len)]
-        for gene in self.genes:
-            gene.generate_initial_values(ws)
-
-####################################################
+import GeneticAlgorithm
+from GeneticAlgorithm import *
 
 class Node:
     def __init__(self, name, x, y, z, lumped_mass, x_gene_name = 'na', y_gene_name = 'na', z_gene_name = 'na'):
@@ -334,7 +310,6 @@ def ga_ANALYZE(model_location):
     max_acc = get_max_acc(model_location)
     print('Maximum acceleration is: ' + str(max_acc))
     return max_acc
-
 
 wb = load_workbook('Setup.xlsx')
 ws = wb.active
