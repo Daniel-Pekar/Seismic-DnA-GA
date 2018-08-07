@@ -6,8 +6,6 @@ from openpyxl import *
 import re
 import time
 
-
-
 #from geneticalgorithm.py###############################
 class Gene:
     def __init__(self,ws,name="",lower=0,upper=0,value=0,cell_col = 0):
