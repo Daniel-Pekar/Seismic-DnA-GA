@@ -239,8 +239,8 @@ def build_tower(nodes, members, mat_props_cols, section_props_cols, start_row, w
     ret = SapModel.File.Save(save_location)
     if ret != 0:
         print('ERROR saving SAP2000 file')
-    #Close SAP2000
-    #SapObject.ApplicationExit(True)
+    return SapModel
+
 
 def get_max_acc(model_location):
     print('Initializing SAP2000 model...')
@@ -261,15 +261,15 @@ def get_max_acc(model_location):
     SapModel.Results.Setup.SetComboSelectedForOutput('DEAD + GM', True)
     #set type to envelope
     SapModel.Results.Setup.SetOptionModalHist(1)
-    ret = SapModel.Results.JointAcc('5-3-2', 0, 1)
+    ret = SapModel.Results.JointAccAbs('5-3-2', 0, 1)
     max_and_min_acc = ret[7]
     max_pos_acc = max_and_min_acc[0]
     min_neg_acc = max_and_min_acc[1]
     SapObject.ApplicationExit(True)
     if abs(max_pos_acc) >= abs(min_neg_acc):
-        return max_pos_acc
+        return abs(max_pos_acc)
     elif abs(min_neg_acc) >= abs(max_pos_acc):
-        return min_neg_acc
+        return abs(min_neg_acc)
     else:
         print('Could not find max acceleration')
 
@@ -300,10 +300,9 @@ def get_excel_indices(ws, index_headings_col, index_values_col, index_start_row)
     return excel_index
 
 
-def ga_CONSTRUCT(chromosome_genes, ws, index_headings_col, index_values_col, index_start_row, time_history, save_location):
+def ga_CONSTRUCT(chromosome_genes, ws, excel_index, time_history, save_location):
     print('\nCONSTRUCT')
     print('----------------------------------')
-    excel_index = get_excel_indices(ws, index_headings_col, index_values_col, index_start_row)
     #variables for get nodes
     nodes_name_col = excel_index.get('Node name col')
     nodes_x_col = excel_index.get('Node x col')
@@ -325,8 +324,8 @@ def ga_CONSTRUCT(chromosome_genes, ws, index_headings_col, index_values_col, ind
     start_row = excel_index.get('Start row')
     all_nodes = get_nodes(nodes_name_col, nodes_x_col, nodes_y_col, nodes_z_col, nodes_mass_col, nodes_start_row, range_to_mult_by_gene, gene_to_mult_by, chromosome_genes, ws)
     all_members = get_members(start_node_col, end_node_col, member_type_col, member_prop_col, start_row, ws)
-    build_tower(all_nodes, all_members, mat_props_cols, section_props_cols, start_row, ws, time_history, save_location)
-    return excel_index
+    SapModel = build_tower(all_nodes, all_members, mat_props_cols, section_props_cols, start_row, ws, time_history, save_location)
+    return SapModel
 
 
 def ga_ANALYZE(model_location):
@@ -344,14 +343,11 @@ TimeHistory = r'C:\Users\kotab\Documents\Seismic\EQ1_acc.txt'
 TestChromosome = Chromosome(len=23)
 StartTime = time.time()
 
-for i in range(20):
-    print('\n\n\n**********************************')
-    print('TOWER ' + str(i + 1))
-    print('**********************************')
-    SaveLocation = r'C:\Users\kotab\Documents\Seismic\Models\SAP2000_model' + str(i) + '.sdb'
-    TestChromosome.create_Chromosome(ws)
-    ga_CONSTRUCT(TestChromosome.genes, ws, 'A', 'B', 4, TimeHistory, SaveLocation)
-    ga_ANALYZE(SaveLocation)
+
+SaveLocation = r'C:\Users\kotab\Documents\Seismic\Models\SAP2000_model.sdb'
+TestChromosome.create_Chromosome(ws)
+ExcelIndex = get_excel_indices(ws, 'A', 'B', 4)
+SapModel = ga_CONSTRUCT(TestChromosome.genes, ws, ExcelIndex, TimeHistory, SaveLocation)
+ga_ANALYZE(SaveLocation)
 TotalTime = time.time() - StartTime
 print('\n\n\n\n\nDONE. Total time taken for 100 models: ' + str(TotalTime))
-print('Average time per model: ' + str(TotalTime / (i + 1)))
