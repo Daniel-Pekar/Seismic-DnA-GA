@@ -23,29 +23,32 @@ class Chromosome:
         self.genes = genes
         self.fitness = random.random() #lol fix
 
-    def create_chromosome(self,worksheet):
+    def create_initial_chromosome(self,worksheet):
         self.genes = [Gene(ws = worksheet, cell_col = i + 4) for i in range(self.len)]
         for gene in self.genes:
             gene.generate_initial_values(ws)
 
+    #def run_sap_model
+        #should change self.fitness into fabi
+
     def mutation_uniform(self,prob):
         for i in range(self.len):
-            if random.random()>prob:
+            if random.random()<prob:
                 self.genes[i].value = random.uniform(self.genes[i].lower,self.genes[i].upper)
 
     def mutation_triangular(self,prob):
         for i in range(self.len):
-            if random.random() > prob:
+            if random.random() < prob:
                 self.genes[i].value = random.triangular(self.genes[i].lower, self.genes[i].upper)
 
     def mutation_min(self,prob):
         for i in range(self.len):
-            if random.random() > prob:
+            if random.random() < prob:
                 self.genes[i].value = random.uniform(self.genes[i].lower)
 
     def mutation_max(self,prob):
         for i in range(self.len):
-            if random.random() > prob:
+            if random.random() < prob:
                 self.genes[i].value = random.uniform(self.genes[i].upper)
 
 class Population:
@@ -58,7 +61,7 @@ class Population:
     def create_initial_pop(self,ws):
         self.chromosomes = [Chromosome(len = self.chromlen) for i in range(self.pop)]
         for chromosome in self.chromosomes:
-            chromosome.create_chromosome(ws)
+            chromosome.create_initial_chromosome(ws)
 
     def total_fit(self):
         return sum(self.chromosomes[i].fitness for i in range(self.pop))
@@ -77,7 +80,7 @@ class Population:
         self.chromosomes.sort(key=lambda x: x.fitness, reverse=True)
         parents = []
         for i in range(num):
-            parents.append(self.chromosomes.pop(i))
+            parents.append(self.chromosomes.pop(0))
         self.pop -= num
         return parents
 
@@ -124,8 +127,37 @@ class Population:
         return parents
 
     def crossover_npoint(self,n,parents):
-        crossover_points = random.sample(range(self.chromlen),n)
-        ## NOTE FINISHED
+        crossover_points = random.sample(range(1, self.chromlen), n)
+        crossover_points.sort(key=lambda x: x, reverse=False)
+        crossover_points.insert(0, 0)
+        crossover_points.append(self.chromlen)
+        children = [[], []]
+        origin = []
+        for i in range(len(crossover_points) - 1):
+            for j in range(crossover_points[i + 1] - crossover_points[i]):
+                origin.append(i % 2)
+        for i in range(len(origin)):
+            children[0].append(parents[origin[i]][i])
+            children[1].append(parents[1 - origin[i]][i])
+        return children
+
+    def crossover_randomflip(self,parents,num_children):
+        children = []
+        for i in range(num_children):
+            children.append([])
+            for j in range(self.chromlen):
+                if random.randint(0,1) == 0:
+                    children[-1].append(parents[0][j])
+                else:
+                    children[-1].append(parents[1][j])
+        return children
+
+    def crossover_flip(self,parents):
+        children = [[],[]]
+        for i in range(self.chromlen):
+            children[0].append(parents[i%2][i])
+            children[1].append(parents[1 - i%2][i])
+        return children
 
     def crossover_triangle(self,parents,num_children):
         children = [[] for i in range(num_children)]
@@ -144,11 +176,35 @@ class Population:
 wb = load_workbook('Setup.xlsx')
 ws = wb.active
 glen = (ws['J2']).value
+generations = 10
+max_fit = []
+avg_fit = []
 
-Popinit = Population(chromosomelen = glen,pop = 10)
-Popinit.create_initial_pop(ws)
+Pop = Population(chromosomelen = glen,pop = 10)
+Pop.create_initial_pop(ws)
+
+for i in range(generations):
+    for chromosome in Pop.chromosomes:
+        chromosome.run_sap_models()
+    avg_fit.append(Pop.avg_fitness())
+    max_fit.append(Pop.max_fitness())
+    new_Pop = Population(chromosomelen = glen, pop = 10)
+    temp_parent = Pop.selection_elitism(2) #[[gene1],[gene2]]
+    temp_parent_2 = Pop.selection_roulette(2)
+    temp_parents = temp_parent+temp_parent_2
+    parents = []
+    for j in temp_parents:
+        parents.append(j)
+    #use choices or something to get 5 pairs out of 4 parents
+    #apply same crossover for all pairs of parents to get children
+    #put all children into the population
+    #for all choromosomes in population, mutate
 
 
-
-
-
+    #create sap models
+    #eval max and avg fitness
+    #apply elitism for 2 best
+    #apply roulette/stochastic/rank/tournament selection
+    #choose 2 parents
+    #make 5 pairs of children using crossovers (npoint/randomflip/flip/uniform/triangular)
+    #mutate
