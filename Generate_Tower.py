@@ -5,6 +5,8 @@ import random
 from openpyxl import *
 import re
 import time
+import GeneticAlgorithm
+from GeneticAlgorithm import*
 
 #from geneticalgorithm.py###############################
 '''

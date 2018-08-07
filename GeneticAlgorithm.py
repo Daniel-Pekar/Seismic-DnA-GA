@@ -53,9 +53,4 @@ class Population:
                 maxf = genome.fitness
         return maxf
 
-wb = load_workbook('Setup.xlsx')
-ws = wb.active
-glen = (ws['J2']).value
 
-Popinit = Population(genomelen = glen,pop = 5)
-Popinit.create_initial_pop(ws)
