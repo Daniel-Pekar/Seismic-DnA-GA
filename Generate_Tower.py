@@ -7,6 +7,7 @@ import re
 import time
 
 #from geneticalgorithm.py###############################
+'''
 class Gene:
     def __init__(self,ws,name="",lower=0,upper=0,value=0,cell_col = 0):
         self.cell_col = cell_col
@@ -31,6 +32,7 @@ class Chromosome:
             gene.generate_initial_values(ws)
 
 ####################################################
+'''
 
 class Node:
     def __init__(self, name, x, y, z, lumped_mass, x_gene_name = 'na', y_gene_name = 'na', z_gene_name = 'na'):
