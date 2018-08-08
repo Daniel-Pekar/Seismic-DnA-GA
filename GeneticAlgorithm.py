@@ -61,10 +61,10 @@ class Population:
             chromosome.create_initial_chromosome(ws)
 
     def total_fit(self):
-        return sum(self.chromosomes[i].fitness for i in range(self.pop))
+        return sum(chromosome.fitness for chromosome in self.chromosomes)
 
     def avg_fitness(self):
-        return self.total_fit()/self.pop
+        return self.total_fit()/len(self.chromosomes)
 
     def max_fitness(self):
         maxf = 0
@@ -128,14 +128,14 @@ class Population:
         crossover_points.sort(key=lambda x: x, reverse=False)
         crossover_points.insert(0, 0)
         crossover_points.append(self.chromlen)
-        children = [[], []]
+        children = [[Chromosome(len=self.chromlen)] for i in range(2)]
         origin = []
         for i in range(len(crossover_points) - 1):
             for j in range(crossover_points[i + 1] - crossover_points[i]):
                 origin.append(i % 2)
         for i in range(len(origin)):
-            children[0].append(parents[origin[i]][i])
-            children[1].append(parents[1 - origin[i]][i])
+            children[0].genes.append(parents[origin[i]].genes[i])
+            children[1].genes.append(parents[1 - origin[i]].genes[i])
         return children
 
     def crossover_randomflip(self,parents,num_children):
@@ -169,3 +169,4 @@ class Population:
             for j in range(self.chromlen):
                 i.append(random.uniform(parents[0][j],parents[1][j]))
         return children
+

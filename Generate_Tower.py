@@ -5,7 +5,6 @@ import random
 from openpyxl import *
 import re
 import time
-import GeneticAlgorithm
 from GeneticAlgorithm import *
 
 class Node:
@@ -317,7 +316,6 @@ TimeHistory = r'C:\Users\kotab\Documents\Seismic\EQ1_acc.txt'
 
 TestChromosome = Chromosome(len=23)
 StartTime = time.time()
-
 
 SaveLocation = r'C:\Users\kotab\Documents\Seismic\Models\SAP2000_model.sdb'
 TestChromosome.create_Chromosome(ws)

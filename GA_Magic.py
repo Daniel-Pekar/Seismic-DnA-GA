@@ -1,5 +1,3 @@
-import GeneticAlgorithm
-import Generate_Tower
 from GeneticAlgorithm import *
 from Generate_Tower import *
 
@@ -18,11 +16,7 @@ Pop.create_initial_pop(ws)
 
 def run_GA(generations,population,chromosomelen,num_elitism,type_selection,type_crossover,type_mutation,mutation_prob):
 
-for i in range(generations):
-    for chromosome in Pop.chromosomes:
-        chromosome.run_sap_models()
-    avg_fit.append(Pop.avg_fitness())
-    max_fit.append(Pop.max_fitness())
+
     new_Pop = Population(chromosomelen = glen, pop = 10)
     temp_parent = Pop.selection_elitism(2)
     temp_parent += Pop.selection_roulette(2)
