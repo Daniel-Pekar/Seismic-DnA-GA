@@ -1,61 +1,3 @@
-<<<<<<< HEAD
-import os
-import win32com.client
-import openpyxl
-import random
-from openpyxl import *
-
-class Gene:
-    def __init__(self,ws,name="",lower=0,upper=0,value=0,cell_col = 0):
-        self.cell_col = cell_col
-        self.name = ws['K' + str(self.cell_col)].value
-        self.lower = ws['L' + str(self.cell_col)].value
-        self.upper = ws['M' + str(self.cell_col)].value
-        self.value = value
-
-    def generate_initial_values(self,ws):
-        self.value = random.uniform(self.lower,self.upper)
-
-class Genome:
-    def __init__(self,len,genes = [],fitness = 0):
-        self.len = len
-        self.genes = genes
-        self.fitness = fitness
-
-    def create_Genome(self,worksheet):
-        self.genes = [Gene(ws = worksheet, cell_col = i + 4) for i in range(self.len)]
-        for gene in self.genes:
-            gene.generate_initial_values(ws)
-
-    #Selection, crossover, mutation
-
-class Population:
-    def __init__(self, genomes = [],generation = 1,pop = 0,genomelen = 0):
-        self.genomes = genomes
-        self.generation = generation
-        self.pop = pop
-        self.genomelen = genomelen
-
-    def create_initial_pop(self,ws):
-        self.genomes = [Genome(len = self.genomelen) for i in range(self.pop)]
-        for genome in self.genomes:
-            genome.create_Genome(ws)
-
-    def avg_fitness(self):
-        total_fitness = 0
-        for genome in self.genomes:
-            total_fitness += genome.fitness
-        return total_fitness/self.pop
-
-    def max_fitness(self):
-        maxf = 0
-        for genome in self.genomes:
-            if genome.fitness > maxf:
-                maxf = genome.fitness
-        return maxf
-
-
-=======
 import os
 import win32com.client
 import openpyxl
@@ -67,9 +9,9 @@ from operator import attrgetter
 class Gene:
     def __init__(self,ws,name="",lower=0,upper=0,value=0,cell_col = 0):
         self.cell_col = cell_col
-        self.name = ws['K' + str(self.cell_col)].value
-        self.lower = ws['L' + str(self.cell_col)].value
-        self.upper = ws['M' + str(self.cell_col)].value
+        self.name = ws['N' + str(self.cell_col)].value
+        self.lower = ws['O' + str(self.cell_col)].value
+        self.upper = ws['P' + str(self.cell_col)].value
         self.value = value
 
     def generate_initial_values(self,ws):
@@ -79,12 +21,12 @@ class Chromosome:
     def __init__(self,len,genes = [],fitness = 0):
         self.len = len
         self.genes = genes
-        self.fitness = random.random() #lol fix
+        self.fitness = fitness
 
     def create_initial_chromosome(self,worksheet):
         self.genes = [Gene(ws = worksheet, cell_col = i + 4) for i in range(self.len)]
         for gene in self.genes:
-            gene.generate_initial_values(ws)
+            gene.generate_initial_values(worksheet)
 
     def mutation_uniform(self,prob):
         for i in range(self.len):
@@ -119,7 +61,7 @@ class Population:
             chromosome.create_initial_chromosome(ws)
 
     def total_fit(self):
-        return sum(self.chromosomes[i].fitness for i in range(self.pop))
+        return sum(chromosome.fitness for chromosome in self.chromosomes)
 
     def avg_fitness(self):
         return self.total_fit()/self.pop
@@ -186,14 +128,14 @@ class Population:
         crossover_points.sort(key=lambda x: x, reverse=False)
         crossover_points.insert(0, 0)
         crossover_points.append(self.chromlen)
-        children = [[], []]
+        children = [Chromosome(len = self.chromlen) for i in range(2)]
         origin = []
         for i in range(len(crossover_points) - 1):
             for j in range(crossover_points[i + 1] - crossover_points[i]):
                 origin.append(i % 2)
         for i in range(len(origin)):
-            children[0].append(parents[origin[i]][i])
-            children[1].append(parents[1 - origin[i]][i])
+            children[0].genes.append(parents[origin[i]].genes[i])
+            children[1].genes.append(parents[1 - origin[i]].genes[i])
         return children
 
     def crossover_randomflip(self,parents,num_children):
@@ -227,4 +169,4 @@ class Population:
             for j in range(self.chromlen):
                 i.append(random.uniform(parents[0][j],parents[1][j]))
         return children
->>>>>>> master
+

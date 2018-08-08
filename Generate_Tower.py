@@ -243,23 +243,19 @@ def build_tower(nodes, members, mat_props_cols, section_props_cols, start_row, w
     ret = SapModel.File.Save(save_location)
     if ret != 0:
         print('ERROR saving SAP2000 file')
-    return SapModel
+    return SapObject
 
 
-def get_max_acc(model_location):
-    print('Initializing SAP2000 model...')
-    # create SAP2000 object
-    SapObject = win32com.client.Dispatch('SAP2000v15.SapObject')
-    # start SAP2000
-    SapObject.ApplicationStart()
+def get_max_acc(SapObject):
     # create SapModel Object
     SapModel = SapObject.SapModel
-    #initialize model
-    SapModel.File.OpenFile(model_location)
     #Run Analysis
     print('Computing...')
     SapModel.Analyze.RunAnalysis()
     print('Finished computing.')
+    #Set units to metres
+    N_m_C = 10
+    SapModel.SetPresentUnits(N_m_C)
     #Get RELATIVE acceleration from node 5-3-2
     SapModel.Results.Setup.DeselectAllCasesAndCombosForOutput()
     SapModel.Results.Setup.SetComboSelectedForOutput('DEAD + GM', True)
@@ -338,21 +334,3 @@ def ga_ANALYZE(model_location):
     max_acc = get_max_acc(model_location)
     print('Maximum acceleration is: ' + str(max_acc))
     return max_acc
-
-
-wb = load_workbook('Setup.xlsx')
-ws = wb.active
-TimeHistory = r'C:\Users\kotab\Documents\Seismic\EQ1_acc.txt'
-
-TestChromosome = Chromosome(len=23)
-StartTime = time.time()
-
-
-SaveLocation = r'C:\Users\kotab\Documents\Seismic\Models\SAP2000_model.sdb'
-TestChromosome.create_Chromosome(ws)
-ExcelIndex = get_excel_indices(ws, 'A', 'B', 4)
-SapModel = ga_CONSTRUCT(TestChromosome.genes, ws, ExcelIndex, TimeHistory, SaveLocation)
-ga_ANALYZE(SaveLocation)
-TotalTime = time.time() - StartTime
-print('\n\n\n\n\nDONE. Total time taken for 100 models: ' + str(TotalTime))
-
