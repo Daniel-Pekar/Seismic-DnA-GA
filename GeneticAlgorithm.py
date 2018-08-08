@@ -9,9 +9,9 @@ from operator import attrgetter
 class Gene:
     def __init__(self,ws,name="",lower=0,upper=0,value=0,cell_col = 0):
         self.cell_col = cell_col
-        self.name = ws['K' + str(self.cell_col)].value
-        self.lower = ws['L' + str(self.cell_col)].value
-        self.upper = ws['M' + str(self.cell_col)].value
+        self.name = ws['N' + str(self.cell_col)].value
+        self.lower = ws['O' + str(self.cell_col)].value
+        self.upper = ws['P' + str(self.cell_col)].value
         self.value = value
 
     def generate_initial_values(self,ws):
@@ -21,12 +21,12 @@ class Chromosome:
     def __init__(self,len,genes = [],fitness = 0):
         self.len = len
         self.genes = genes
-        self.fitness = random.random() #lol fix
+        self.fitness = fitness
 
     def create_initial_chromosome(self,worksheet):
         self.genes = [Gene(ws = worksheet, cell_col = i + 4) for i in range(self.len)]
         for gene in self.genes:
-            gene.generate_initial_values(ws)
+            gene.generate_initial_values(worksheet)
 
     def mutation_uniform(self,prob):
         for i in range(self.len):
@@ -128,7 +128,7 @@ class Population:
         crossover_points.sort(key=lambda x: x, reverse=False)
         crossover_points.insert(0, 0)
         crossover_points.append(self.chromlen)
-        children = [[Chromosome(len=self.chromlen)] for i in range(2)]
+        children = [Chromosome(len = self.chromlen) for i in range(2)]
         origin = []
         for i in range(len(crossover_points) - 1):
             for j in range(crossover_points[i + 1] - crossover_points[i]):
