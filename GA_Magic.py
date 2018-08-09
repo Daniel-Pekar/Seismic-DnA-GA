@@ -1,5 +1,3 @@
-import GeneticAlgorithm
-import Generate_Tower
 from GeneticAlgorithm import *
 from Generate_Tower import *
 import matplotlib.pyplot as plt
@@ -15,7 +13,7 @@ def create_new_population(old_population,excel_index):
         max_acc = ga_ANALYZE(SapObject)
         TotalTime = time.time() - StartTime
         print('Time to run', TotalTime)
-        CurChromosome.fitness = max_acc
+        CurChromosome.fitness = CurChromosome.FABI(results)
         CurrentIndex = CurrentIndex + 1
     new_population = Population()
     new_population.generation = old_population.generation + 1
@@ -104,11 +102,7 @@ plt.show()
 '''
 def run_GA(generations,population,chromosomelen,num_elitism,type_selection,type_crossover,type_mutation,mutation_prob):
 
-for i in range(generations):
-    for chromosome in Pop.chromosomes:
-        chromosome.run_sap_models()
-    avg_fit.append(Pop.avg_fitness())
-    max_fit.append(Pop.max_fitness())
+
     new_Pop = Population(chromosomelen = glen, pop = 10)
     temp_parent = Pop.selection_elitism(2)
     temp_parent += Pop.selection_roulette(2)
