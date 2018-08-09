@@ -128,9 +128,9 @@ def get_members(start_node_col, end_node_col, member_type_col, member_prop_col, 
 
 def build_tower(nodes, members, mat_props_cols, section_props_cols, start_row, ws, time_history, save_location):
     print('Initializing SAP2000 model...')
-    #create SAP2000 object
+    # create SAP2000 object
     SapObject = win32com.client.Dispatch('SAP2000v15.SapObject')
-    #start SAP2000
+    # start SAP2000
     SapObject.ApplicationStart()
     #create SapModel Object
     SapModel = SapObject.SapModel
@@ -246,32 +246,50 @@ def build_tower(nodes, members, mat_props_cols, section_props_cols, start_row, w
     return SapObject
 
 
-def get_max_acc(SapObject):
+def get_sap_results(SapObject):
     # create SapModel Object
     SapModel = SapObject.SapModel
     #Run Analysis
     print('Computing...')
     SapModel.Analyze.RunAnalysis()
     print('Finished computing.')
-    #Set units to metres
-    N_m_C = 10
-    SapModel.SetPresentUnits(N_m_C)
     #Get RELATIVE acceleration from node 5-3-2
     SapModel.Results.Setup.DeselectAllCasesAndCombosForOutput()
     SapModel.Results.Setup.SetComboSelectedForOutput('DEAD + GM', True)
     #set type to envelope
     SapModel.Results.Setup.SetOptionModalHist(1)
-    ret = SapModel.Results.JointAccAbs('5-3-2', 0, 1)
+    #Get joint acceleration
+    #Set units to metres
+    N_m_C = 10
+    SapModel.SetPresentUnits(N_m_C)
+    g = 9.81
+    ret = SapModel.Results.JointAccAbs('5-3-2', 0)
     max_and_min_acc = ret[7]
     max_pos_acc = max_and_min_acc[0]
     min_neg_acc = max_and_min_acc[1]
-    SapObject.ApplicationExit(True)
     if abs(max_pos_acc) >= abs(min_neg_acc):
-        return abs(max_pos_acc)
+        max_acc = abs(max_pos_acc)/g
     elif abs(min_neg_acc) >= abs(max_pos_acc):
-        return abs(min_neg_acc)
+        max_acc = abs(min_neg_acc)/g
     else:
         print('Could not find max acceleration')
+    #Get joint displacement
+    #Set units to millimetres
+    N_mm_C = 9
+    SapModel.SetPresentUnits(N_mm_C)
+    ret = SapModel.Results.JointDispl('5-3-2', 0)
+    max_and_min_disp = ret[7]
+    max_pos_disp = max_and_min_disp[0]
+    min_neg_disp = max_and_min_disp[1]
+    if abs(max_pos_disp) >= abs(min_neg_disp):
+        max_drift = abs(max_pos_acc)
+    elif abs(min_neg_disp) >= abs(max_pos_disp):
+        max_drift = abs(min_neg_disp)
+    else:
+        print('Could not find max drift')
+    #Close SAP2000
+    SapObject.ApplicationExit(True)
+    return max_acc, max_drift
 
 
 def get_excel_indices(ws, index_headings_col, index_values_col, index_start_row):
@@ -324,13 +342,14 @@ def ga_CONSTRUCT(chromosome_genes, ws, excel_index, time_history, save_location)
     start_row = excel_index.get('Start row')
     all_nodes = get_nodes(nodes_name_col, nodes_x_col, nodes_y_col, nodes_z_col, nodes_mass_col, nodes_start_row, range_to_mult_by_gene, gene_to_mult_by, chromosome_genes, ws)
     all_members = get_members(start_node_col, end_node_col, member_type_col, member_prop_col, start_row, ws)
-    SapModel = build_tower(all_nodes, all_members, mat_props_cols, section_props_cols, start_row, ws, time_history, save_location)
-    return SapModel
+    SapObject = build_tower(all_nodes, all_members, mat_props_cols, section_props_cols, start_row, ws, time_history, save_location)
+    return SapObject
 
 
-def ga_ANALYZE(model_location):
+def ga_ANALYZE(SapObject):
     print('\nANALYZE')
     print('----------------------------------')
-    max_acc = get_max_acc(model_location)
-    print('Maximum acceleration is: ' + str(max_acc))
-    return max_acc
+    max_acc_and_drift = get_sap_results(SapObject)
+    print('Max acceleration is: ' + str(max_acc_and_drift[0]) + ' g')
+    print('Max drift is: ' + str(max_acc_and_drift[1]) + ' mm')
+    return max_acc_and_drift
