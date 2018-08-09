@@ -5,6 +5,7 @@ import random
 from openpyxl import *
 import bisect
 from operator import attrgetter
+from scipy.stats import norm
 
 class Gene:
     def __init__(self,ws,name="",lower=0,upper=0,value=0,cell_col = 0):
@@ -22,6 +23,32 @@ class Chromosome:
         self.len = len
         self.genes = genes
         self.fitness = fitness
+
+    def FABI(self, results):
+        footprint = (self.genes[0].value*2)**2 #inches squared
+        weight = 1.12 #lb
+        design_life = 100 #years
+        construction_cost = 2500000*(weight**2)+6*(10**6)
+        land_cost = 35000 * footprint
+        annual_building_cost = (land_cost + construction_cost) / design_life
+        annual_revenue = 430300
+        equipment_cost = 20000000
+        return_period_1 = 50
+        return_period_2 = 300
+        max_disp = results[1] #mm
+        apeak_1 = results[0] #g's
+        xpeak_1 = 100*max_disp/1524 #% roof drift
+        structural_damage_1 = scipy.stats.norm(mu = 1.5, std = 0.5).cdf(xpeak_1)
+        equipment_damage_1 = scipy.stats.norm(mu = 1.75, std = 0.7).cdf(apeak_1)
+        economic_loss_1 = structural_damage_1*construction_cost + equipment_damage_1*equipment_cost
+        annual_economic_loss_1 = economic_loss_1/return_period_1
+        structural_damage_2 = 0.5
+        equipment_damage_2 = 0.5
+        economic_loss_2 = structural_damage_2*construction_cost + equipment_damage_2*equipment_cost
+        annual_economic_loss_2 = economic_loss_2/return_period_2
+        annual_seismic_cost = annual_economic_loss_1 + annual_economic_loss_2
+        fabi = annual_revenue - annual_building_cost - annual_seismic_cost
+        return fabi
 
     def create_initial_chromosome(self,worksheet):
         self.genes = [Gene(ws = worksheet, cell_col = i + 4) for i in range(self.len)]

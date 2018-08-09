@@ -13,7 +13,7 @@ def create_new_population(old_population,excel_index):
         max_acc = ga_ANALYZE(SapObject)
         TotalTime = time.time() - StartTime
         print('Time to run', TotalTime)
-        CurChromosome.fitness = max_acc
+        CurChromosome.fitness = CurChromosome.FABI(results)
         CurrentIndex = CurrentIndex + 1
     new_population = Population()
     new_population.generation = old_population.generation + 1
