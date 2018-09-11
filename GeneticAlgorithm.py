@@ -5,6 +5,8 @@ import random
 from openpyxl import *
 import bisect
 from operator import attrgetter
+import scipy
+import numpy
 from scipy.stats import norm
 
 class Gene:
@@ -38,8 +40,8 @@ class Chromosome:
         max_disp = results[1] #mm
         apeak_1 = results[0] #g's
         xpeak_1 = 100*max_disp/1524 #% roof drift
-        structural_damage_1 = scipy.stats.norm(mu = 1.5, std = 0.5).cdf(xpeak_1)
-        equipment_damage_1 = scipy.stats.norm(mu = 1.75, std = 0.7).cdf(apeak_1)
+        structural_damage_1 = scipy.stats.norm(1.5, 0.5).cdf(xpeak_1)
+        equipment_damage_1 = scipy.stats.norm(1.75, 0.7).cdf(apeak_1)
         economic_loss_1 = structural_damage_1*construction_cost + equipment_damage_1*equipment_cost
         annual_economic_loss_1 = economic_loss_1/return_period_1
         structural_damage_2 = 0.5
@@ -112,9 +114,18 @@ class Population:
         self.chromosomes.sort(key=lambda x: x.fitness, reverse=False)
         parents = []
         fitness_list = []
+        weights = []
+        total_fit = 0
         for chromosome in self.chromosomes:
             fitness_list.append(chromosome.fitness)
-        parents = random.choices(self.chromosomes,weights = fitness_list, k = num_parents)
+        total_fit = sum(fitness_list)
+        weights = [round(fit/total_fit, 4) for fit in fitness_list]
+        weights[-1] = 0
+        weights[-1] = 1-sum(weights)
+        if weights[-1] < 0:
+            weights[weights.index(max(weights))] -= 0.001
+            weights[-1] += 0.001
+        parents = numpy.random.choice(self.chromosomes, size = num_parents, replace = False, p = weights)
         return parents
 
     def selection_stochastic(self,num_parents):
@@ -196,4 +207,3 @@ class Population:
             for j in range(self.chromlen):
                 i.append(random.uniform(parents[0][j],parents[1][j]))
         return children
-

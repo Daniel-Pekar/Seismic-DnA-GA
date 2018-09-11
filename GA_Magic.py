@@ -1,20 +1,25 @@
 from GeneticAlgorithm import *
+import Generate_Tower
 from Generate_Tower import *
 import matplotlib.pyplot as plt
+StartTime = time.time()
 
 def create_new_population(old_population,excel_index):
-    TimeHistory = r'C:\Users\kotab\Documents\Seismic\EQ1_acc.txt'
+    TimeHistory = r'C:\Users\kotab\Documents\Seismic\EQ1_acc_ms2.txt'
     CurrentIndex = 1
     for CurChromosome in oldPop.chromosomes:
         SaveLocation = r'C:\Users\kotab\Documents\Seismic\Models\SAP2000_model' + str(CurrentIndex) + '.sdb'
-        StartTime = time.time()
+        StartTimeForBuildConstruct = time.time()
         print('\n\nBuilding ' + str(CurrentIndex) + ' out of ' + str(PopulationSize) + ' in population...')
         SapObject = ga_CONSTRUCT(CurChromosome.genes, ws, ExcelIndex, TimeHistory, SaveLocation)
-        max_acc = ga_ANALYZE(SapObject)
-        TotalTime = time.time() - StartTime
-        print('Time to run', TotalTime)
+        results = ga_ANALYZE(SapObject)
+        TimeForConstructAnalyze = time.time() - StartTimeForBuildConstruct
+        print('Time to construct and analyze:', TimeForConstructAnalyze)
         CurChromosome.fitness = CurChromosome.FABI(results)
         CurrentIndex = CurrentIndex + 1
+    print('\n\nCreating new population...')
+    avg_fit = oldPop.avg_fitness()
+    max_fit = oldPop.max_fitness()
     new_population = Population()
     new_population.generation = old_population.generation + 1
     new_population.pop = old_population.pop
@@ -58,9 +63,9 @@ def create_new_population(old_population,excel_index):
         elif mutation_type == "Max":
             child.mutation_max(mut_rate)
     new_population.chromosomes = children
-    return new_population
+    return new_population, old_population, avg_fit,max_fit
 
-wb = load_workbook('Setup.xlsx')
+wb = load_workbook('SetupGA.xlsx')
 ws = wb.active
 
 
@@ -77,25 +82,39 @@ NumberFighters = ExcelIndex['Number Fighters'] #For tournament selection
 NumberPoints = ExcelIndex['Number Points'] #For N point crossover
 
 #Create initial population
-max_fit = []
-avg_fit = []
+max_fit_history = []
+avg_fit_history = []
+generations_history = []
 
 oldPop = Population(chromosomelen = ChromosomeLen, pop = PopulationSize)
 oldPop.create_initial_pop(ws)
 
 for i in range(NumGenerations):
-    newPop = create_new_population(oldPop,ExcelIndex)
-    max_fit.append(newPop.max_fitness())
-    avg_fit.append(newPop.avg_fitness())
+    print('\n\nRUNNING GENERATION ', i + 1)
+    [oldPop, newPop, avg_fit,max_fit] = create_new_population(oldPop,ExcelIndex)
+    max_fit_history.append(max_fit)
+    avg_fit_history.append(avg_fit)
+    generations_history.append(oldPop)
     oldPop = newPop
-    print(max_fit)
-    print(avg_fit)
+    print("\n\nMax FABI was:",max_fit)
+    print("Average FABI was:",avg_fit)
 
-x = [i for i in range(len(max_fit))]
+x = [i for i in range(len(max_fit_history))]
+print('\n\n\n\n\n\nMax FABI history', max_fit_history)
+print('\nAvg FABI history', avg_fit_history)
 
-plt.plot(x,max_fit,'r--',x,avg_fit,'b--')
+maxLine, = plt.plot(x, max_fit_history, 'r--', label='Max FABI')
+avgLine, = plt.plot(x, avg_fit_history, 'b--', label='Average FABI')
+plt.xlabel('Generation')
+plt.ylabel('FABI')
+plt.title('Generation vs. FABI')
+plt.legend(handles=[maxLine, avgLine])
+
+EndTime = time.time()
+TotalRunTime = EndTime - StartTime
+print('\nTotal run time:', TotalRunTime/60/60, 'hours')
+
 plt.show()
-
 
 #
 

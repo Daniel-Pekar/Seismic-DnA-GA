@@ -8,33 +8,6 @@ import time
 import GeneticAlgorithm
 from GeneticAlgorithm import*
 
-#from geneticalgorithm.py###############################
-'''
-class Gene:
-    def __init__(self,ws,name="",lower=0,upper=0,value=0,cell_col = 0):
-        self.cell_col = cell_col
-        self.name = ws['N' + str(self.cell_col)].value
-        self.lower = ws['O' + str(self.cell_col)].value
-        self.upper = ws['P' + str(self.cell_col)].value
-        self.value = value
-
-    def generate_initial_values(self, ws):
-        self.value = round(random.uniform(self.lower, self.upper), 2)
-
-class Chromosome:
-    def __init__(self,len,genes = [],fitness = 0, chance = 0):
-        self.len = len
-        self.genes = genes
-        self.fitness = fitness
-        self.selectionchance = chance
-
-    def create_Chromosome(self,worksheet):
-        self.genes = [Gene(ws = worksheet, cell_col = i + 4) for i in range(self.len)]
-        for gene in self.genes:
-            gene.generate_initial_values(ws)
-
-####################################################
-'''
 
 class Node:
     def __init__(self, name, x, y, z, lumped_mass, x_gene_name = 'na', y_gene_name = 'na', z_gene_name = 'na'):
@@ -139,8 +112,8 @@ def build_tower(nodes, members, mat_props_cols, section_props_cols, start_row, w
     #create new blank model
     ret = SapModel.File.NewBlank()
     #set units for materials
-    kN_m_C = 6
-    SapModel.SetPresentUnits(kN_m_C)
+    N_m_C = 10
+    SapModel.SetPresentUnits(N_m_C)
     #define material properties
     print('Defining material properties...')
     for mat_prop_counter in range(len(mat_props_cols)):
@@ -226,6 +199,8 @@ def build_tower(nodes, members, mat_props_cols, section_props_cols, start_row, w
     print('Done creating members. Total bad members: ' + str(total_bad_members))
     print('Creating load cases and combinations...')
     #Define time history function
+    N_m_C = 10
+    SapModel.SetPresentUnits(N_m_C)
     SapModel.Func.FuncTH.SetFromFile('GM', time_history, 1, 0, 1, 2, True)
     #Set the time history load case
     N_m_C = 10
@@ -319,7 +294,7 @@ def get_excel_indices(ws, index_headings_col, index_values_col, index_start_row)
 
 
 def ga_CONSTRUCT(chromosome_genes, ws, excel_index, time_history, save_location):
-    print('\nCONSTRUCT')
+    print('\nConstruct')
     print('----------------------------------')
     #variables for get nodes
     nodes_name_col = excel_index.get('Node name col')
@@ -347,7 +322,7 @@ def ga_CONSTRUCT(chromosome_genes, ws, excel_index, time_history, save_location)
 
 
 def ga_ANALYZE(SapObject):
-    print('\nANALYZE')
+    print('\nAnalyze')
     print('----------------------------------')
     max_acc_and_drift = get_sap_results(SapObject)
     print('Max acceleration is: ' + str(max_acc_and_drift[0]) + ' g')
