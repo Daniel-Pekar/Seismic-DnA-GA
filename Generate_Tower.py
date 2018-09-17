@@ -21,42 +21,44 @@ class Node:
         self.z_gene_name = z_gene_name
 
 class Member:
-    def __init__(self, start_node, end_node, type, prop):
+    def __init__(self, start_node, end_node, type, prop, thickness):
         self.start_node = start_node
         self.end_node = end_node
         self.type = type
         self.prop = prop
+        self.thickness = thickness
         self.name = start_node + ' to ' + end_node + ' (' + type + ')'
 
 
+def find_value_dep_on_gene(gene_name, range_to_mult_by_gene, gene_to_mult_by, chromosome):
+    if '-' in gene_name:
+        gene_name_pos = gene_name.replace('-', '')
+        for i in range(len(chromosome)):
+            if chromosome[i].name == gene_name_pos:
+                value = chromosome[i].value * -1
+                if multiply_by_gene(gene_name, range_to_mult_by_gene):
+                    value = value * chromosome[gene_to_mult_by - 1].value
+                break
+    else:
+        for i in range(len(chromosome)):
+            if chromosome[i].name == gene_name:
+                value = chromosome[i].value
+                if multiply_by_gene(gene_name, range_to_mult_by_gene):
+                    value = value * chromosome[gene_to_mult_by - 1].value
+                break
+    return value
+
+
+def multiply_by_gene(var_to_check, range_to_mult):
+    var_num_pos = var_to_check.replace('-', '')
+    var_num = var_num_pos.replace('V', '')
+    for current_gene_num in range_to_mult:
+        if current_gene_num == int(var_num):
+            return True
+    return False
+
+
 def get_nodes(nodes_name_col, nodes_x_col, nodes_y_col, nodes_z_col, nodes_mass_col, nodes_start_row, range_to_mult_by_gene, gene_to_mult_by, chromosome, ws):
-
-    def find_value_dep_on_gene(gene_name, range_to_mult_by_gene, gene_to_mult_by, chromosome):
-        if '-' in gene_name:
-            gene_name_pos = gene_name.replace('-', '')
-            for i in range(len(chromosome)):
-                if chromosome[i].name == gene_name_pos:
-                    value = chromosome[i].value * -1
-                    if multiply_by_gene(gene_name, range_to_mult_by_gene):
-                        value = value * chromosome[gene_to_mult_by - 1].value
-                    break
-        else:
-            for i in range(len(chromosome)):
-                if chromosome[i].name == gene_name:
-                    value = chromosome[i].value
-                    if multiply_by_gene(gene_name, range_to_mult_by_gene):
-                        value = value * chromosome[gene_to_mult_by - 1].value
-                    break
-        return value
-
-
-    def multiply_by_gene(var_to_check, range_to_mult):
-        var_num_pos = var_to_check.replace('-', '')
-        var_num = var_num_pos.replace('V', '')
-        for current_gene_num in range_to_mult:
-            if current_gene_num == int(var_num):
-                return True
-        return False
     print('Reading nodes from Excel workbook...')
     all_nodes = []
     #assign values to nodes
@@ -85,7 +87,7 @@ def get_nodes(nodes_name_col, nodes_x_col, nodes_y_col, nodes_z_col, nodes_mass_
     return all_nodes
 
 
-def get_members(start_node_col, end_node_col, member_type_col, member_prop_col, start_row, ws):
+def get_members(start_node_col, end_node_col, member_type_col, member_prop_col, member_thickness_col, chromosome, start_row, ws):
     print('Reading members from Excel workbook...')
     all_members = []
     current_row = start_row
@@ -94,7 +96,11 @@ def get_members(start_node_col, end_node_col, member_type_col, member_prop_col, 
         end_node_name = ws[end_node_col + str(current_row)].value
         member_type = ws[member_type_col + str(current_row)].value
         member_prop = ws[member_prop_col + str(current_row)].value
-        all_members.append(Member(start_node_name, end_node_name, member_type, member_prop))
+        member_thickness = None
+        if member_prop == 'VARIABLE':
+            member_thickness_var = ws[member_thickness_col + str(current_row)].value
+            member_thickness = find_value_dep_on_gene(member_thickness_var, [], [], chromosome)
+        all_members.append(Member(start_node_name, end_node_name, member_type, member_prop, member_thickness))
         current_row = current_row + 1
     return all_members
 
@@ -131,21 +137,22 @@ def build_tower(nodes, members, mat_props_cols, section_props_cols, start_row, w
         #set unit weight
         SapModel.PropMaterial.SetWeightAndMass(mat_name, 1, mat_unit_wt)
     #define section properties
-    print('Defining section properties...')
-    for sec_prop_counter in range(len(section_props_cols)):
-        current_col = section_props_cols[sec_prop_counter]
-        sec_name = ws[current_col + str(start_row)].value
-        sec_mat = ws[current_col + str(start_row + 1)].value
-        sec_shape = ws[current_col + str(start_row + 2)].value
-        if 'SQUARE' == sec_shape:
-            sec_width = ws[current_col + str(start_row + 3)].value
-            sec_height = ws[current_col + str(start_row + 4)].value
-            SapModel.PropFrame.SetRectangle(sec_name, sec_mat, sec_height, sec_width)
-        elif 'CIRCULAR' == sec_shape:
-            sec_dia = ws[current_col +str(start_row + 3)].value
-            SapModel.PropFrame.SetCircle(sec_name, sec_mat, sec_dia)
-        else:
-            print('ERROR: Define a section shape in the setup workbook!')
+    if section_props_cols != 'None':
+        print('Defining section properties...')
+        for sec_prop_counter in range(len(section_props_cols)):
+            current_col = section_props_cols[sec_prop_counter]
+            sec_name = ws[current_col + str(start_row)].value
+            sec_mat = ws[current_col + str(start_row + 1)].value
+            sec_shape = ws[current_col + str(start_row + 2)].value
+            if 'SQUARE' == sec_shape:
+                sec_width = ws[current_col + str(start_row + 3)].value
+                sec_height = ws[current_col + str(start_row + 4)].value
+                SapModel.PropFrame.SetRectangle(sec_name, sec_mat, sec_height, sec_width)
+            elif 'CIRCULAR' == sec_shape:
+                sec_dia = ws[current_col +str(start_row + 3)].value
+                SapModel.PropFrame.SetCircle(sec_name, sec_mat, sec_dia)
+            else:
+                print('ERROR: Define a section shape in the setup workbook!')
     #create nodes
     print('Creating nodes...')
     total_bad_nodes = 0
@@ -186,11 +193,21 @@ def build_tower(nodes, members, mat_props_cols, section_props_cols, start_row, w
         current_member_start_node = members[current_member_counter].start_node
         current_member_end_node = members[current_member_counter].end_node
         current_member_prop = members[current_member_counter].prop
+        current_member_thickness = members[current_member_counter].thickness
         current_member_name = members[current_member_counter].name
         assigned_member_name = ''
         #set units to inches
         lb_in_F = 1
         SapModel.SetPresentUnits(lb_in_F)
+        #if member thicknesses are variable
+        if current_member_prop == 'VARIABLE':
+            #create the section property for this thickness
+            sec_name = str('Member' + str(current_member_counter))
+            sec_mat = 'BALSA'
+            sec_height = current_member_thickness
+            sec_width = current_member_thickness
+            SapModel.PropFrame.SetRectangle(sec_name, sec_mat, sec_height, sec_width)
+            current_member_prop = sec_name
         [ret, assigned_member_name] = SapModel.FrameObj.AddByPoint(current_member_start_node, current_member_end_node, assigned_member_name, current_member_prop, current_member_name)
         if ret != 0:
             print('ERROR creating member ' + current_member_name)
@@ -310,13 +327,14 @@ def ga_CONSTRUCT(chromosome_genes, ws, excel_index, time_history, save_location)
     end_node_col = excel_index.get('Member end col')
     member_type_col = excel_index.get('Member type col')
     member_prop_col = excel_index.get('Member property col')
+    member_thickness_col = excel_index.get('Member thickness col')
     member_start_row = excel_index.get('Start row')
     #variables for build tower
-    mat_props_cols = excel_index.get('Material properties cols')
-    section_props_cols = excel_index.get('Section properties cols')
+    mat_props_cols = excel_index.get('Material property defs')
+    section_props_cols = excel_index.get('Section property defs')
     start_row = excel_index.get('Start row')
     all_nodes = get_nodes(nodes_name_col, nodes_x_col, nodes_y_col, nodes_z_col, nodes_mass_col, nodes_start_row, range_to_mult_by_gene, gene_to_mult_by, chromosome_genes, ws)
-    all_members = get_members(start_node_col, end_node_col, member_type_col, member_prop_col, start_row, ws)
+    all_members = get_members(start_node_col, end_node_col, member_type_col, member_prop_col, member_thickness_col, chromosome_genes, start_row, ws)
     SapObject = build_tower(all_nodes, all_members, mat_props_cols, section_props_cols, start_row, ws, time_history, save_location)
     return SapObject
 

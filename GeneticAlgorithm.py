@@ -18,7 +18,7 @@ class Gene:
         self.value = value
 
     def generate_initial_values(self,ws):
-        self.value = random.uniform(self.lower,self.upper)
+        self.value = random.uniform(self.lower, self.upper)
 
 class Chromosome:
     def __init__(self,len,genes = [],fitness = 0):
@@ -78,7 +78,7 @@ class Chromosome:
                 self.genes[i].value = random.uniform(self.genes[i].upper)
 
 class Population:
-    def __init__(self, chromosomes = [],generation = 1,pop = 0,chromosomelen = 0):
+    def __init__(self, chromosomes=[], generation=1, pop=0, chromosomelen=0):
         self.chromosomes = chromosomes
         self.generation = generation
         self.pop = pop
@@ -104,11 +104,10 @@ class Population:
 
     def selection_elitism(self,num):
         self.chromosomes.sort(key=lambda x: x.fitness, reverse=True)
-        parents = []
+        elites = []
         for i in range(num):
-            parents.append(self.chromosomes.pop(0))
-        self.pop -= num
-        return parents
+            elites.append(self.chromosomes[i])
+        return elites
 
     def selection_roulette(self,num_parents):
         self.chromosomes.sort(key=lambda x: x.fitness, reverse=False)
@@ -162,6 +161,7 @@ class Population:
         return parents
 
     def crossover_npoint(self,n,parents):
+        print('Using npoint crossover...')
         crossover_points = random.sample(range(1, self.chromlen), n)
         crossover_points.sort(key=lambda x: x, reverse=False)
         crossover_points.insert(0, 0)
@@ -174,6 +174,10 @@ class Population:
         for i in range(len(origin)):
             children[0].genes.append(parents[origin[i]].genes[i])
             children[1].genes.append(parents[1 - origin[i]].genes[i])
+        for i in range(len(parents)):
+            print(parents[i].genes)
+        for i in range(len(children)):
+            print(children[i].genes)
         return children
 
     def crossover_randomflip(self,parents,num_children):

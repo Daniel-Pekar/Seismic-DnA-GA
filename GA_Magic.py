@@ -22,7 +22,6 @@ def create_new_population(old_population,excel_index):
     max_fit = oldPop.max_fitness()
     new_population = Population()
     new_population.generation = old_population.generation + 1
-    new_population.pop = old_population.pop
     new_population.chromlen = old_population.chromlen
     selection_type = excel_index['Type of Selection']
     crossover_type = excel_index['Type of Crossover']
@@ -30,9 +29,9 @@ def create_new_population(old_population,excel_index):
     num_parents = excel_index['Number Parents']
     mut_rate = excel_index['Mutation Rate']
     mutation_type = excel_index['Type of Mutation']
+    new_population.pop = population_size
     parents = []
     children = []
-    children.extend(old_population.selection_elitism(ExcelIndex['Elitism Number']))
     if selection_type == "Roulette":
         parents.extend(old_population.selection_roulette(num_parents))
     elif selection_type == "Stochastic":
@@ -62,10 +61,11 @@ def create_new_population(old_population,excel_index):
             child.mutation_min(mut_rate)
         elif mutation_type == "Max":
             child.mutation_max(mut_rate)
+    children.extend(old_population.selection_elitism(ExcelIndex['Elitism Number']))
     new_population.chromosomes = children
-    return new_population, old_population, avg_fit,max_fit
+    return new_population, old_population, avg_fit, max_fit
 
-wb = load_workbook('SetupGA.xlsx')
+wb = load_workbook('SetupGASimple.xlsx')
 ws = wb.active
 
 
@@ -91,7 +91,7 @@ oldPop.create_initial_pop(ws)
 
 for i in range(NumGenerations):
     print('\n\nRUNNING GENERATION ', i + 1)
-    [oldPop, newPop, avg_fit,max_fit] = create_new_population(oldPop,ExcelIndex)
+    [oldPop, newPop, avg_fit, max_fit] = create_new_population(oldPop,ExcelIndex)
     max_fit_history.append(max_fit)
     avg_fit_history.append(avg_fit)
     generations_history.append(oldPop)
